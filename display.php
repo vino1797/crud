@@ -29,8 +29,8 @@ if(isset($_POST['displaySend']))
                             <td>'.$name.'</td>
                             <td>'.$age.'</td>
                             <td>'.$city.'</td>    
-                            <td><button id="edit" onclick="editstd('.$id.')" class="btn btn-sm btn-success"><i class="fa-solid fa-pen-to-square"></i></button></td>
-                            <td><button id="delete" onclick="deletestd('.$id.')" class="btn btn-sm btn-danger"><i class="fa-solid fa-trash-can"></i></button></td>                       
+                            <td><button id="edit" onclick="editstd('.$id.')" class="btn btn-sm btn-success shadow"><i class="fa-solid fa-pen-to-square"></i></button></td>
+                            <td><button id="delete" onclick="deletestd('.$id.')" class="btn btn-sm btn-danger shadow"><i class="fa-solid fa-trash-can"></i></button></td>                       
                             </tr>
                             </tbody>';
                 $number++;
@@ -40,3 +40,53 @@ if(isset($_POST['displaySend']))
 }
 ?>
 
+<?php
+include 'connect.php';
+if(isset($_POST['ptDisplaySend']))
+{
+    $table='<h4 class="mb-4">Parents Details</h4>
+        <table class="table table-hover border border-black border-2 text-center">
+        <thead>
+            <tr>
+            <th scope="col">SNo</th>
+            <th scope="col">Fullname</th>
+            <th scope="col">Gender</th>
+            <th scope="col">Education</th>
+            <th scope="col">Phone Number</th>
+            <th scope="col">DOB</th>
+            <th scope="col">Address</th>
+            <th scope="col">Edit</th>
+            <th scope="col">Delete</th>
+            </tr>
+        </thead>';
+            $sql="SELECT id,pt_name,pt_gender,pt_ocp,pt_num,pt_dob,pt_address FROM `parents`";
+            $result=mysqli_query($con,$sql);
+            $counting=1;
+            while($row=mysqli_fetch_assoc($result))
+            {
+                $iD=$row['id'];
+                $ptname=$row['pt_name'];
+                $ptgender=$row['pt_gender'];
+                $ptocp=$row['pt_ocp'];
+                $ptnum=$row['pt_num'];
+                $ptdob=$row['pt_dob'];
+                $ptaddress=$row['pt_address'];
+                $table.='<tbody>
+                            <tr>
+                            <th scope="row">'.$counting.'</th>
+                            <td>'.$ptname.'</td>
+                            <td>'.$ptgender.'</td>
+                            <td>'.$ptocp.'</td>  
+                            <td>'.$ptnum.'</td>  
+                            <td>'.$ptdob.'</td>
+                            <td>'.$ptaddress.'</td>
+                            <td><button id="edit" onclick="editpt('.$iD.')" class="btn btn-sm btn-success shadow"><i class="fa-solid fa-pen-to-square"></i></button></td>
+                            <td><button id="delete" onclick="deletept('.$iD.')" class="btn btn-sm btn-danger shadow"><i class="fa-solid fa-trash-can"></i></button></td>                       
+                            </tr>
+                            </tbody>';
+                $counting++;
+            }
+    $table.='</table>';
+    echo $table;
+}
+?>

@@ -17,29 +17,68 @@
 <body>
 <div class="container-fluid my-3">
 <h1 class="text-center">CRUD in PHP MYSQL JQuery</h1>
-<div class="row">
+<div class="row mb-5">
     <div class="col-md-3 m-3">
         <h4>Student Form</h4>
-        <form id="frm">
+        <form id="frm1">
         <div class="form-group my-2">
-        <label for="std_name">Name</label>
-        <input type="text" name="name" id="std_name" autocomplete="off" placeholder="Enter Name" class="form-control shadow">
+        <label for="std_name">Name :</label>
+        <input type="text" name="name" id="std_name"  placeholder="Enter Name" class="form-control shadow">
         </div>
         <div class="form-group my-2">
-        <label for="std_age">Age</label>
-        <input type="text" name="age" id="std_age" autocomplete="off" placeholder="Enter Age" class="form-control shadow">
+        <label for="std_age">Age :</label>
+        <input type="text" name="age" id="std_age"  placeholder="Enter Age" class="form-control shadow">
         </div>
         <div class="form-group my-2">
-        <label for="std_city">City</label>
-        <input type="text" name="city" id="std_city" autocomplete="off" placeholder="Enter City" class="form-control shadow">
+        <label for="std_city">City :</label>
+        <input type="text" name="city" id="std_city"  placeholder="Enter City" class="form-control shadow">
         </div>
         <input type="hidden" id="hidden" value="0">
-        <button type="button" id="save" class="btn btn-primary my-3" onclick="addstd()">Save Details</button>
+        <button type="button" id="save" class="btn btn-primary shadow my-3" onclick="addstd()">Save Details</button>
         </form>
     </div>
     <div class="col-md-8 m-3" id="ddt"></div>
 </div>
+<div class="row mb-5">
+    <div class="col-md-3 m-3">
+        <h4>Parents Form</h4>
+        <form id="frm2">
+        <div class="form-group my-3">
+        <label for="pt_name">Fullname :</label>
+            <input type="text" name="pt_name" id="pt_name"  placeholder="Enter Fullname" class="form-control shadow">
+        </div>
+        <div class="form-group row my-3">
+            <div class="col-4"><label for="pt_gender">Gender :</label></div>
+            <div class="col-8"><input class="shadow mx-1" id="pt_gender"  type="radio" name="pt_gender" value="Male"> Male 
+                                <input class="shadow mx-1"  id="pt_gender" type="radio" name="pt_gender" value="Female"> Female </div>
+        </div>
+        <div class="form-group row my-3">
+           <div class="col-4"><label for="pt_ocp">Education :</label></div>
+           <div class="col-8"><input class="edu shadow mx-1"  type="checkbox" id="pt_ocp" name="pt_ocp[]" value="Degree"> Degree
+           <input class="edu shadow mx-1"  type="checkbox" id="pt_ocp" name="pt_ocp[]" value="HSC"> HSC
+           <input class="edu shadow mx-1"  type="checkbox" id="pt_ocp" name="pt_ocp[]" value="SSLC"> SSLC </div>
+        </div>
+        <div class="form-group my-3">
+        <label for="pt_num">Phone Number :</label>
+            <input  type="text" id="pt_num" name="pt_num" minlength="10" maxlength="10" placeholder="Enter Number" class="form-control shadow">
+        </div>
+        <div class="form-group my-3">
+        <div><label for="pt_dob">Date of Birth :</label></div>
+            <input  type="date" id="pt_dob" name="pt_dob" class=" form-control shadow border border-none">
+        </div>
+        <div class="form-group my-3">
+        <label for="pt_address">Address :</label>
+            <textarea id="pt_address" name="pt_address" cols="50" rows="5" class="form-control shadow"></textarea>
+        </div>
+        <input type="hidden" id="pthidden" value="0">
+        <button type="button" id="submit" class="btn btn-primary shadow my-3" onclick="addpt()">Submit</button>
+        </form>
+    </div>
+    <div class="col-md-8 m-3" id="ptddt"></div>
 </div>
+</div>
+
+<!-- script for student -->
 <script>
 $(document).ready(function()
 {
@@ -59,6 +98,7 @@ function displayData(){
         }
     });
 }
+
 //add function
 function addstd()
 {
@@ -76,9 +116,10 @@ function addstd()
             ageSend:ageAdd,
             citySend:cityAdd
         },
-        success:function(data,status){
+        success:function(data,status)
+        {
             displayData();
-            $("#frm")[0].reset();
+            $("#frm1")[0].reset();
             $('#hidden').val("0");
         }
     });
@@ -90,12 +131,19 @@ function addstd()
        var cityEdit=$('#std_city').val();
        var hiddendata=$('#hidden').val();
 
-       $.post("update.php",{nameEdit:nameEdit,ageEdit:ageEdit,cityEdit:cityEdit,hiddendata:hiddendata},function(data,status){
-        displayData();
-        $("#frm")[0].reset();
-       });
+       $.post("update.php",{nameEdit:nameEdit,
+                            ageEdit:ageEdit,
+                            cityEdit:cityEdit,
+                            hiddendata:hiddendata},
+                            function(data,status)
+                            {
+                                displayData();
+                                $("#frm1")[0].reset();
+                            }
+            );
     }
 }
+
 //Delete function
 function deletestd(deleteid)
 {
@@ -110,6 +158,7 @@ function deletestd(deleteid)
         }
     });
 }
+
 //Update function
 function editstd(updateid)
 {   
@@ -120,6 +169,123 @@ function editstd(updateid)
         $('#std_name').val(stdid.STD_NAME);
         $('#std_age').val(stdid.STD_AGE);
         $('#std_city').val(stdid.STD_CITY);
+    });
+}
+
+</script>
+
+<!-- script for Parents -->
+<script>
+$(document).ready(function()
+{
+    displayDataParents();
+});
+//display function
+function displayDataParents(){
+    var displayDataParents="true";
+    $.ajax({
+        url:"display.php",
+        type:"post",
+        data:{
+            ptDisplaySend : displayDataParents
+        },
+        success:function(data,status){
+            $('#ptddt').html(data);
+        }
+    });
+}
+
+//add function
+function addpt()
+{
+    var pthidden=$('#pthidden').val();
+    if(pthidden==0)
+    {
+    var ptNameAdd=$('#pt_name').val();
+    var ptGenderAdd = $("[name=pt_gender]:checked").val(); 
+    var ptOcpAdd = [];  
+           $('.edu').each(function(){  
+                if($(this).is(":checked"))  
+                {  
+                     ptOcpAdd.push($(this).val());  
+                }  
+           });  
+           ptOcpAdd = ptOcpAdd.toString();  
+    var ptNumAdd=$('#pt_num').val();
+    var PtDobAdd=$('#pt_dob').val();
+    var ptAddressAdd=$('#pt_address').val();
+    $.ajax({
+        url:"insert.php",
+        type:"post",
+        data:{
+            ptNameSend : ptNameAdd,
+            ptGenderSend : ptGenderAdd,
+            ptOcpSend : ptOcpAdd,
+            ptNumSend : ptNumAdd,
+            PtDobSend : PtDobAdd,
+            ptAddressSend : ptAddressAdd
+        },
+        success:function(data,status){
+            displayDataParents();
+            $("#frm2")[0].reset();
+            $('#pthidden').val("0");
+        }
+    });
+    }
+    else
+    {
+    var ptNameEdit=$('#pt_name').val();
+    var ptGenderEdit=$("[name=pt_gender]:checked").val();
+    var ptOcpEdit=$('#pt_ocp').val();
+    var ptNumEdit=$('#pt_num').val();
+    var PtDobEdit=$('#pt_dob').val();
+    var ptAddressEdit=$('#pt_address').val();
+    var pthiddendata=$('#pthidden').val();
+
+    $.post("update.php",{ptNameEdit:ptNameEdit,
+                        ptGenderEdit:ptGenderEdit,
+                        ptOcpEdit:ptOcpEdit,
+                        ptNumEdit:ptNumEdit,
+                        PtDobEdit:PtDobEdit,
+                        ptAddressEdit:ptAddressEdit,
+                        pthiddendata:pthiddendata},
+                        function(data,status)
+                        {
+                            displayDataParents();
+                            $("#frm2")[0].reset();
+                        }
+        );
+    }
+}
+
+//Delete function
+function deletept(deleteiD)
+{
+    $.ajax({
+        url:"delete.php",
+        type:"post",
+        data:{
+            delSend : deleteiD
+        },
+        success:function(data,status){
+            displayDataParents();
+        }
+    });
+}
+
+//Update function
+function editpt(updateiD)
+{   
+    $('#pthidden').val(updateiD);
+
+    $.post("update.php",{editSend:updateiD},function(data,status){
+        var ptid=JSON.parse(data);
+        $('#pt_name').val(ptid.pt_name);
+        $('[name="pt_gender"][value="' + ptid.pt_gender + '"]').prop('checked', true);
+        $("[name='pt_ocp[]'][value='" +  ptid.pt_ocp + "']").prop("checked", true);
+        $('#pt_num').val(ptid.pt_num);
+        $('#pt_dob').val(ptid.pt_dob);
+        $('#pt_address').val(ptid.pt_address);
     });
 }
 </script>
